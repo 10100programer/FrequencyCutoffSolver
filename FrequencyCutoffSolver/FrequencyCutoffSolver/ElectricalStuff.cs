@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FrequencyCutoffSolver
 {
-    static class ElectricalStuff
+    static public class ElectricalStuff
     {
         public class Resistor:ElectricalComponents
         {
@@ -47,7 +47,7 @@ namespace FrequencyCutoffSolver
         {
             public double[] CommonValues()
             {
-                return new double[] { };
+                return CV();
             }
             static public double[] CV()
             {
@@ -58,10 +58,10 @@ namespace FrequencyCutoffSolver
                     100e-12, 120e-12, 150e-12, 180e-12, 220e-12, 270e-12,
                     330e-12, 390e-12, 470e-12, 560e-12, 680e-12, 820, 820e-12,
                     1000e-12, 1200e-12, 1500e-12, 1800e-12, 2200e-12, 2700e-12,
-                    3300e-12, 3900e-12, 4700e-12, 5600e-12, 6800e-12, 8200e-12,
-                    0.010e-9, 0.012e-9, 0.015e-9, 0.018e-9, 0.022e-9, 0.027e-9, 
-                    0.033e-9, 0.039e-9, 0.047e-9, 0.056e-9,0.056e-9, 0.068e-9, 
-                    0.082e-9, 0.10e-9, 0.12e-9, 0.15e-9, 0.18e-9, 0.22e-9, 0.27e-9, 
+                    3300e-12, 3900e-12, 4700e-12, 5600e-12, 6800e-12, 8200e-12,     //25
+                    0.010e-9, 0.012e-9, 0.015e-9, 0.018e-9, 0.022e-9, 0.027e-9,     //31
+                    0.033e-9, 0.039e-9, 0.047e-9, 0.056e-9,0.056e-9, 0.068e-9,      //37 
+                    0.082e-9, 0.10e-9, 0.12e-9, 0.15e-9, 0.18e-9, 0.22e-9, 0.27e-9, //44 
                     0.33e-9, 0.39e-9,0.47e-9, 0.56e-9, 0.68e-9, 0.82e-9, 1.0e-9, 
                     1.2e-9, 1.5e-9, 1.8e-9, 2.2e-9, 2.7e-9, 3.3e-9, 3.9e-9,
                     4.7e-9, 5.6e-9, 6.8e-9, 8.2e-9, 10e-9, 22e-9, 33e-9, 47e-9

@@ -10,6 +10,8 @@ namespace fcs_cli
     {
         static void Main(string[] args)
         {
+            FrequencyTools.FrequencyCutoff.PredictiveSolve(1000, 1);
+            Console.ReadLine();
         }
     }
 }
