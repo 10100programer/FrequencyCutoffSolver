@@ -15,13 +15,20 @@ namespace FrequencyCutoffSolver
             /// <param name="Resistance"></param>
             /// <param name="Capacitance"></param>
             /// <returns>Frequency Cutoff</returns>
-            static public double SimpleSolve(double Resistance,double Capacitance)
+            static public double SimpleSolve(double Resistance, double Capacitance)
             {
                 return 1 / (2 * Math.PI * Resistance * Capacitance);
             }
             static public double ClassSolve(ElectricalStuff.Capacitor Cap, ElectricalStuff.Resistor resistor)
             {
                 throw new NotImplementedException();
+            }
+            static public double PredictiveSolve(double FrequencyToSolveFor,byte percentToTarget)
+            {
+                
+
+
+
             }
         }
     }
