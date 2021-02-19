@@ -10,7 +10,16 @@ namespace fcs_cli
     {
         static void Main(string[] args)
         {
-            FrequencyTools.FrequencyCutoff.PredictiveSolve(144000000, 1);
+            ConsoleColor consoleColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Please Enter Frequency in Hz");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(":>");
+            double Freq = double.Parse(Console.ReadLine());
+            Console.WriteLine("Please Enter the precision % (recomend 1%)");
+            Console.Write(":>");
+            byte Percent = byte.Parse(Console.ReadLine());
+            FrequencyTools.FrequencyCutoff.PredictiveSolve(Freq, Percent);
             Console.ReadLine();
         }
     }
