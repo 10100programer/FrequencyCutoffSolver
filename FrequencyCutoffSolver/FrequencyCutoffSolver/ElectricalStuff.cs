@@ -10,14 +10,17 @@ namespace FrequencyCutoffSolver
     {
         public class Resistor:ElectricalComponents
         {
+            private readonly double value;
             public double[] CommonValues()
             {
                 return CV();
             }
 
-            public string ToSIString(SI.Units UnitOutput)
+            public string ToSIString()
             {
-                throw new NotImplementedException();
+                SI sI = SI.AutoDetermineUnit(value);
+
+                return sI.BaseToSIOutput(value, "Ω");
             }
             static public double[] CV()
             {
@@ -42,9 +45,14 @@ namespace FrequencyCutoffSolver
                     560000000,620000000,680000000,750000000,820000000,910000000
                 };
             }
+            public Resistor(double rawvalue)
+            {
+                value = rawvalue;
+            }
         }
         public class Capacitor:ElectricalComponents
         {
+            private readonly double value;
             public double[] CommonValues()
             {
                 return CV();
@@ -67,12 +75,18 @@ namespace FrequencyCutoffSolver
                     4.7e-9, 5.6e-9, 6.8e-9, 8.2e-9, 10e-9, 22e-9, 33e-9, 47e-9
                 };
             }
-            public string ToSIString(SI.Units UnitOutput)
+            public string ToSIString()
             {
-                throw new NotImplementedException();
+                SI sI = SI.AutoDetermineUnit(value);
+
+                return sI.BaseToSIOutput(value,"F");
+
+            }
+            public Capacitor(double rawvalue)
+            {
+                value = rawvalue;
             }
         }
-
     }
     /// <summary>
     /// International System of Units 
@@ -88,7 +102,8 @@ namespace FrequencyCutoffSolver
             tera,       //T	10^(12)	1000^4	
             giga,       //G	10^9	1000^3	
             mega,       //M	10^6	1000^2	
-            kilo,       //k	10^3	1000^1	
+            kilo,       //k	10^3	1000^1
+            none,       //  10^0    
             deci,       //d	10^(-1)	1000^(-1/3)	
             centi,      //c	10^(-2)	1000^(-2/3)	
             milli,      //m	10^(-3)	1000^(-1)	
@@ -108,11 +123,79 @@ namespace FrequencyCutoffSolver
         /// <summary>
         /// Si Symbol ie <c><b>M</b></c>
         /// </summary>
-        public readonly char symbol;
+        public readonly string symbol;
         /// <summary>
         /// base 10 notation exponet value
         /// </summary>
         public readonly sbyte exponent;
+        public string BaseToSIOutput(double value)
+        {
+            value = value * Math.Pow(10,exponent);
+            return value.ToString() + symbol;
+        }
+        public string BaseToSIOutput(double value, string Unit)
+        {
+            value = value * Math.Pow(10, -exponent);
+            return String.Format("{0,8:###.0000}", value)  + symbol + Unit;
+        }
+        public static SI AutoDetermineUnit(double value)
+        {
+            int cts = 0;
+            if (value > 1000)
+            {
+                while (value > 1000)
+                {
+                    value = value / 1000;
+                    cts++;
+                }
+            }
+            else if (value < 1)
+            {
+                while (value < 1)
+                {
+                    value = value * 1000;
+                    cts--;
+                }
+            }
+            Units UTZ;
+            switch (cts)
+            {
+                case 1:
+                    UTZ = Units.kilo;
+                    break;
+                case 2:
+                    UTZ = Units.mega;
+                    break;
+                case 3:
+                    UTZ = Units.giga;
+                    break;
+                case 4:
+                    UTZ = Units.tera;
+                    break;
+                case 5:
+                    UTZ = Units.peta;
+                    break;
+                case -1:
+                    UTZ = Units.milli;
+                    break;
+                case -2:
+                    UTZ = Units.micro;
+                    break;
+                case -3:
+                    UTZ = Units.nano;
+                    break;
+                case -4:
+                    UTZ = Units.pico;
+                    break;
+                case -5:
+                    UTZ = Units.femto;
+                    break;
+                default:
+                    UTZ = Units.none;
+                    break;
+            }
+            return new SI(UTZ);
+        }
         public SI(Units units)
         {
             switch (units)
@@ -120,61 +203,67 @@ namespace FrequencyCutoffSolver
                 case Units.peta:
                     prefix = "peta";
                     US_EnglishWord = "quadrillion";
-                    symbol = 'P';
+                    symbol = "P";
                     exponent = 15;
                     break;
                 case Units.tera:
                     prefix = "tera";
                     US_EnglishWord = "trillion";
-                    symbol = 'T';
+                    symbol = "T";
                     exponent = 12;
                     break;
                 case Units.giga:
                     prefix = "giga";
                     US_EnglishWord = "";
-                    symbol = 'G';
+                    symbol = "G";
                     exponent = 9;
                     break;
                 case Units.mega:
                     prefix = "mega";
                     US_EnglishWord = "million";
-                    symbol = 'M';
+                    symbol = "M";
                     exponent = 6;
                     break;
                 case Units.kilo:
                     prefix = "kilo";
                     US_EnglishWord = "thousand";
-                    symbol = 'k';
+                    symbol = "k";
                     exponent = 3;
+                    break;
+                case Units.none:
+                    prefix = "";
+                    US_EnglishWord = "";
+                    symbol = "";
+                    exponent = 0;
                     break;
                 case Units.milli:
                     prefix = "thousandth";
                     US_EnglishWord = "milli";
-                    symbol = 'm';
+                    symbol = "m";
                     exponent = -3;
                     break;
                 case Units.micro:
                     prefix = "micro";
                     US_EnglishWord = "millionth";
-                    symbol = 'µ';
+                    symbol = "µ";
                     exponent = -6;
                     break;
                 case Units.nano:
                     prefix = "nano";
                     US_EnglishWord = "billionth";
-                    symbol = 'n';
+                    symbol = "n";
                     exponent = -9;
                     break;
                 case Units.pico:
                     prefix = "pico";
                     US_EnglishWord = "trillionth";
-                    symbol = 'p';
+                    symbol = "p";
                     exponent = -12;
                     break;
                 case Units.femto:
                     prefix = "femto";
                     US_EnglishWord = "quadrillionth";
-                    symbol = 'f';
+                    symbol = "f";
                     exponent = -15;
                     break;
                 default:
@@ -198,7 +287,7 @@ namespace FrequencyCutoffSolver
         /// </summary>
         /// <param name="sI"></param>
         /// <returns></returns>
-        string ToSIString(SI.Units UnitOutput);
+        string ToSIString();
 
     }
 }

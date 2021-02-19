@@ -23,12 +23,13 @@ namespace FrequencyCutoffSolver
             {
                 throw new NotImplementedException();
             }
-            static public FrequencyCutoffSolution PredictiveSolve(double FrequencyToSolveFor, byte percentToTarget)
+            static public List<FrequencyCutoffSolution> PredictiveSolve(double FrequencyToSolveFor, byte percentToTarget)
             {
-                int DebugCTS = 0;
-                int Capcts = 0;
-                int rescts = 0;
-                FrequencyCutoffSolution fcs = new FrequencyCutoffSolution(0,0,0);
+                List<FrequencyCutoffSolution> frequencyCutoffSolutions = new List<FrequencyCutoffSolution>();
+                //int DebugCTS = 0;
+                //int Capcts = 0;
+                //int rescts = 0;
+                //FrequencyCutoffSolution fcs = new FrequencyCutoffSolution(0,0,0);
                 foreach (double Cap in ElectricalStuff.Capacitor.CV())
                 {
                     foreach (double Res in ElectricalStuff.Resistor.CV())
@@ -36,16 +37,22 @@ namespace FrequencyCutoffSolver
                         double Freq = SimpleSolve(Res, Cap);
                         if (WithinRangePercentage(Freq, percentToTarget, FrequencyToSolveFor))
                         {
-                            Console.WriteLine(Res + "Ω | " + Cap + "C =" + Freq);
-                            fcs = new FrequencyCutoffSolution(Cap, Res, Freq);
+                            //Console.WriteLine(Res + "Ω | " + Cap + "F =" + Freq);
+                            frequencyCutoffSolutions.Add(new FrequencyCutoffSolution(Cap, Res, Freq));
                         }
-                        DebugCTS++;
-                        rescts++;
+                        //DebugCTS++;
+                        //rescts++;
                     }
-                    Capcts++;
-                    rescts = 0;
+                    //Capcts++;
+                    //rescts = 0;
                 }
-                return fcs;
+                foreach (FrequencyCutoffSolution item in frequencyCutoffSolutions)
+                {
+                    Console.WriteLine(item.ToString());
+                }
+
+
+                return frequencyCutoffSolutions;
             }
             /// <summary>
             /// checks if num is in range of target value
@@ -70,15 +77,25 @@ namespace FrequencyCutoffSolver
         }
         public class FrequencyCutoffSolution
         {
+            public readonly ElectricalStuff.Capacitor capacitor;
+            public readonly ElectricalStuff.Resistor resistor;
+            public readonly SI sI;
             public readonly double Capacitance;
             public readonly double Resistance;
             public readonly double Frequency;
 
-            public FrequencyCutoffSolution(double cap,double res, double freq)
+            public FrequencyCutoffSolution(double cap, double res, double freq)
             {
+                capacitor = new ElectricalStuff.Capacitor(cap);
+                resistor = new ElectricalStuff.Resistor(res);
+                sI = SI.AutoDetermineUnit(freq);
                 Capacitance = cap;
                 Resistance = res;
                 Frequency = freq;
+            }
+            public override string ToString()
+            {
+                return "Solution:>>>>>>>>>\n" + resistor.ToSIString() + "\n" + capacitor.ToSIString() + "\n" + sI.BaseToSIOutput(Frequency,"Hz") + "\n" ;
             }
         }
     }
